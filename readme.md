@@ -10,3 +10,7 @@ Was tested extensively on the [ColorFeret dataset](https://www.nist.gov/itl/iad/
 
 Doesn't work as well (about 5 ot 6 images for which the output was worse out of 3000 frontal face images in the dataset) when the nose is naturally slant.
 Can be corrected by using the line along the eyes instead.
+
+![referenceimage](https://github.com/tejvi-m/face-preproc/blob/master/dlibLandmarks.png "references")
+
+an image of all the numbered landmark points
