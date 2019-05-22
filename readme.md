@@ -11,4 +11,5 @@ Was tested extensively on the [ColorFeret dataset] (https://www.nist.gov/itl/iad
 Doesn't work as well (about 5 or 6 images for which the output was worse out of 3000 frontal face images in the dataset) when the nose is naturally slant.
 Can be corrected by using the line along the eyes instead.
 
+still a work in progress.
 code to be added : scaling and full alignment.
