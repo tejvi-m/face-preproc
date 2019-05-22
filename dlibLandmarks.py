@@ -1,3 +1,5 @@
+imagePath = '/home/tejvi/Downloads/ali-marel-482998-unsplash.jpg'
+
 from collections import OrderedDict
 import numpy as np
 import cv2
@@ -20,6 +22,9 @@ FACIAL_LANDMARKS_IDXS = OrderedDict([
 	("jaw", (0, 17))
 ])
 
+
+#Does dlib work on "horizontal" faces???
+#gives the four "corners" of the relevant rectangle
 def rect_to_bb(rect):
 	x = rect.left()
 	y = rect.top()
@@ -28,7 +33,7 @@ def rect_to_bb(rect):
 
 	return (x, y, w, h)
 
-
+#predictor returns "shape". converting that to a numpy array? of tuples
 def shape_to_np(shape, dtype="int"):
 	coords = np.zeros((68, 2), dtype=dtype)
 
@@ -38,11 +43,14 @@ def shape_to_np(shape, dtype="int"):
 	return coords
 
 class dlibLandmarks:
-	def __init__(self, image = '/home/tejvi/Downloads/ali-marel-482998-unsplash.jpg', relevantCoords = list(range(1, 69)), face = False, show = True, save = True,
+	def __init__(self, resize = True, image = '/home/tejvi/Downloads/ali-marel-482998-unsplash.jpg', relevantCoords = list(range(1, 69)), face = False, show = False, save = True,
 	savePath = 'landmarkedFace0.jpg', color = (0, 0, 255), size = 3):
 		self.imgPath = image
 		img = cv2.imread(image)
-		self.image = imutils.resize(img, width = 500)
+		if resize:
+			self.image = imutils.resize(img, width = 500)
+		else:
+			self.image = img
 		self.show = show
 		self.save = save
 		self.color = (0, 0, 255)
@@ -51,21 +59,22 @@ class dlibLandmarks:
 		self.savePath = savePath
 		self.coords = relevantCoords
 
-
+	#line drawinf: for my reference or does it do anything at all
 	def drawLine(self, array = None):
 
 		#arrray doesn't need to be passed
 		if array == None:
 			array = self.LandmarkCoordinates
-		print(array)
+		#print(array)
 
 		#Only care about the ycoords, because only looking for the highest and lowest points
+		#Will fail if the image is rotated by 90 degrees? Then what?
 		yCoords = [];
 		for i in array:
 			yCoords.append(i[1])
 		yHighest = max(yCoords)
 		yLowest = min(yCoords)
-		print(yHighest)
+		#print(yHighest)
 
 		highest = 0;
 		lowest = 0;
@@ -78,7 +87,7 @@ class dlibLandmarks:
 				lowest = (x, y)
 			else:
 				pass
-		print(highest, lowest)
+		#print(highest, lowest)
 
 		#will fail if people have naturally slant noses
 
@@ -96,8 +105,8 @@ class dlibLandmarks:
 			imageRotated = ndimage.rotate(image, 90 + self.angle * 180 / 3.14)
 
 		imsave(self.savePath, imageRotated)
-		print("img saved")
-		imshow(imageRotated)
+		#print("img saved")
+		#imshow(imageRotated)
 
 
 	@property
@@ -105,10 +114,12 @@ class dlibLandmarks:
 		#wrt to the horizontal
 		(x1, y1), (x2, y2) = self.drawLine(self.LandmarkCoordinates)
 
+		if (x1 == x2):
+			return 3.14 / 2
 		slope = (y2 - y1) / (x2 - x1)
 
 		angle = math.atan(slope)
-		print(angle)
+		#print(angle)
 
 		return angle
 
@@ -147,5 +158,9 @@ class dlibLandmarks:
 		requiredCoords = []
 		for i in self.coords:
 			requiredCoords.append((shape[i - 1]).tolist())
-		print(requiredCoords)
+		#print(requiredCoords)
 		return requiredCoords
+
+
+#write a fucntion for triangulation???
+#if __name__ == "__main__":
